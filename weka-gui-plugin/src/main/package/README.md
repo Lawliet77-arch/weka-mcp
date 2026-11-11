@@ -6,7 +6,7 @@
 
 - Weka stable 3.8.7；本包不覆盖宿主 Weka 或其他 Explorer 标签页。
 - Java 17 或更高版本；GUI 从当前 Java 运行环境启动 MCP 子进程。
-- 按 Weka 包管理和 Java 跨平台路径机制设计，不依赖 Bash、PowerShell 或 Python。已实测 macOS 上的 Weka stable 3.8.7 包（运行时版本号为 3.8.8-SNAPSHOT）；Windows、Linux 和更高 Weka 版本仍需在对应环境实测。
+- 按 Weka 包管理和 Java 跨平台路径机制设计，不依赖 Bash、PowerShell 或 Python。已实测 macOS 上的 Weka stable 3.8.7 包（运行时版本号为 3.8.8-SNAPSHOT）；Ubuntu（Xvfb）和 Windows 的 JDK 17 CI 构建也通过了真实 Explorer 测试。更高 Weka 版本仍需在对应环境实测。
 - 在 Weka 包管理器中选择本地 `weka-mcp-gui-0.8.0.zip` 安装，然后重启 Explorer。包安装到 `WEKA_HOME/packages/wekaMcp`；未设置 `WEKA_HOME` 时默认是用户主目录下的 `wekafiles/packages/wekaMcp`。
 
 ## Agent 原生应用自动化桥接
