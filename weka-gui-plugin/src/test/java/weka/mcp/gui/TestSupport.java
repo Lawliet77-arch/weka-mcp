@@ -22,8 +22,10 @@ final class TestSupport {
         }
         Files.createDirectories(packageDirectory.resolve("tools"));
         Files.createDirectories(packageDirectory.resolve("config"));
-        Files.copy(service, packageDirectory.resolve("tools/weka-mcp-java-1.6.0.jar"),
-                StandardCopyOption.REPLACE_EXISTING);
+        Path installed = packageDirectory.resolve("tools/weka-mcp-java-1.6.0.jar");
+        if (!Files.isRegularFile(installed) || Files.mismatch(service, installed) != -1) {
+            Files.copy(service, installed, StandardCopyOption.REPLACE_EXISTING);
+        }
         for (String name : List.of("weka-whitelist.yaml", "automl-search.yaml", "config.properties")) {
             Files.copy(Path.of("../weka-mcp-java").resolve(name), packageDirectory.resolve("config").resolve(name),
                     StandardCopyOption.REPLACE_EXISTING);

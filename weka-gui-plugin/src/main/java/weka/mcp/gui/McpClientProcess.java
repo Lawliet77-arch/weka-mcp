@@ -203,6 +203,7 @@ public final class McpClientProcess implements AutoCloseable {
                     process.destroy();
                     if (!process.waitFor(5, TimeUnit.SECONDS)) {
                         process.destroyForcibly();
+                        process.waitFor(5, TimeUnit.SECONDS);
                     }
                 }
             } catch (InterruptedException error) {
