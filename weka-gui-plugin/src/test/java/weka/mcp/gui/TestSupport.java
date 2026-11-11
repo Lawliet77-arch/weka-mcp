@@ -1,7 +1,6 @@
 package weka.mcp.gui;
 
 import weka.core.Instances;
-import weka.core.converters.ConverterUtils.DataSource;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -42,7 +41,7 @@ final class TestSupport {
             }
             Files.copy(input, iris, StandardCopyOption.REPLACE_EXISTING);
         }
-        Instances instances = new DataSource(iris.toString()).getDataSet();
+        Instances instances = ExplorerDataOperations.loadDataset(iris);
         instances.setClassIndex(instances.numAttributes() - 1);
         return instances;
     }
@@ -57,7 +56,7 @@ final class TestSupport {
             }
             Files.copy(input, weather, StandardCopyOption.REPLACE_EXISTING);
         }
-        Instances instances = new DataSource(weather.toString()).getDataSet();
+        Instances instances = ExplorerDataOperations.loadDataset(weather);
         instances.setClassIndex(instances.numAttributes() - 1);
         return instances;
     }

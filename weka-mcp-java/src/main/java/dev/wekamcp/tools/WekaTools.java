@@ -30,8 +30,6 @@ import weka.core.Attribute;
 import weka.core.DenseInstance;
 import weka.core.Instance;
 import weka.core.Instances;
-import weka.core.converters.CSVLoader;
-import weka.core.converters.ConverterUtils.DataSource;
 import weka.filters.Filter;
 import weka.filters.SupervisedFilter;
 
@@ -180,19 +178,8 @@ public final class WekaTools {
             if (!Set.of("auto", "arff", "csv").contains(format)) {
                 throw new IllegalArgumentException("format must be auto, arff or csv");
             }
-            Instances data = tasks.call(config.loadTimeoutSeconds(), () -> {
-                if ("csv".equals(format)) {
-                    CSVLoader loader = new CSVLoader();
-                    loader.setFile(path.toFile());
-                    return loader.getDataSet();
-                }
-                if ("arff".equals(format)) {
-                    weka.core.converters.ArffLoader loader = new weka.core.converters.ArffLoader();
-                    loader.setFile(path.toFile());
-                    return loader.getDataSet();
-                }
-                return new DataSource(path.toString()).getDataSet();
-            });
+            Instances data = tasks.call(config.loadTimeoutSeconds(),
+                    () -> dev.wekamcp.engine.DatasetIo.load(path, format));
             validateDataset(data);
             int classIndex = ToolSupport.optionalInt(arguments, "class_index", 0);
             setRequestedClassIndex(data, classIndex);

@@ -39,12 +39,16 @@ class PackageInstallationIT {
             assertTrue(Files.isExecutable(Path.of("target/package/bin/bridge-stdio.sh")));
         }
         Properties description = new Properties();
-        description.load(Files.newBufferedReader(Path.of("target/package/Description.props")));
+        try (var reader = Files.newBufferedReader(Path.of("target/package/Description.props"))) {
+            description.load(reader);
+        }
         assertEquals("wekaMcp", description.getProperty("PackageName"));
         assertEquals("0.8.0", description.getProperty("Version"));
         assertEquals("weka (>=3.8.7)", description.getProperty("Depends"));
         Properties explorer = new Properties();
-        explorer.load(Files.newBufferedReader(Path.of("target/package/Explorer.props")));
+        try (var reader = Files.newBufferedReader(Path.of("target/package/Explorer.props"))) {
+            explorer.load(reader);
+        }
         assertEquals("weka.mcp.gui.McpPanel", explorer.getProperty("Tabs"));
         assertEquals("append", explorer.getProperty("TabsPolicy"));
 

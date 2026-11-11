@@ -14,9 +14,6 @@ import weka.classifiers.Evaluation;
 import weka.classifiers.UpdateableClassifier;
 import weka.core.Instance;
 import weka.core.Instances;
-import weka.core.converters.AbstractFileLoader;
-import weka.core.converters.ArffLoader;
-import weka.core.converters.CSVLoader;
 import weka.core.converters.Loader;
 
 import java.nio.file.Path;
@@ -143,81 +140,78 @@ public final class StreamingService {
 
     private StreamResult trainIncrementally(Path path, String format, Classifier classifier, Map<String, Object> arguments,
             String evaluationMode, int maxInstances, int maxTestInstances, int testEvery, long deadline) throws Exception {
-        boolean arff = "arff".equals(format)
-                || "auto".equals(format) && path.getFileName().toString().toLowerCase(java.util.Locale.ROOT)
-                        .endsWith(".arff");
-        AbstractFileLoader fileLoader = arff ? new ArffLoader() : new CSVLoader();
-        fileLoader.setFile(path.toFile());
-        Loader loader = fileLoader;
-        Instances header = loader.getStructure();
-        if (header.numAttributes() < 2 || header.numAttributes() > config.maxAttributes()) {
-            throw new IllegalArgumentException(
-                    "A stream requires 2 to maxAttributes=" + config.maxAttributes() + " attributes");
-        }
-        int classIndex = ToolSupport.optionalInt(arguments, "class_index", 0);
-        if (classIndex < 0 || classIndex > header.numAttributes()) {
-            throw new IllegalArgumentException("class_index is one-based and must identify an existing attribute");
-        }
-        header.setClassIndex(classIndex == 0 ? header.numAttributes() - 1 : classIndex - 1);
-        if (!header.classAttribute().isNominal() && !header.classAttribute().isNumeric()) {
-            throw new IllegalArgumentException("The stream class attribute must be nominal or numeric");
-        }
-        classifier.buildClassifier(new Instances(header, 0));
-        UpdateableClassifier updateable = (UpdateableClassifier) classifier;
-        Evaluation evaluation = new Evaluation(header);
-        evaluation.setDiscardPredictions(true);
-        Instances test = new Instances(header, 0);
-        int read = 0;
-        int trained = 0;
-        int tested = 0;
-        int skippedMissingClass = 0;
-        String stopReason = "end_of_file";
-        boolean partial = false;
-        while (read < maxInstances) {
-            if (System.nanoTime() >= deadline) {
-                stopReason = "budget_exhausted";
+        try (DatasetIo.LoaderResource opened = DatasetIo.open(path, format)) {
+            Loader loader = opened.loader();
+            Instances header = loader.getStructure();
+            if (header.numAttributes() < 2 || header.numAttributes() > config.maxAttributes()) {
+                throw new IllegalArgumentException(
+                        "A stream requires 2 to maxAttributes=" + config.maxAttributes() + " attributes");
+            }
+            int classIndex = ToolSupport.optionalInt(arguments, "class_index", 0);
+            if (classIndex < 0 || classIndex > header.numAttributes()) {
+                throw new IllegalArgumentException("class_index is one-based and must identify an existing attribute");
+            }
+            header.setClassIndex(classIndex == 0 ? header.numAttributes() - 1 : classIndex - 1);
+            if (!header.classAttribute().isNominal() && !header.classAttribute().isNumeric()) {
+                throw new IllegalArgumentException("The stream class attribute must be nominal or numeric");
+            }
+            classifier.buildClassifier(new Instances(header, 0));
+            UpdateableClassifier updateable = (UpdateableClassifier) classifier;
+            Evaluation evaluation = new Evaluation(header);
+            evaluation.setDiscardPredictions(true);
+            Instances test = new Instances(header, 0);
+            int read = 0;
+            int trained = 0;
+            int tested = 0;
+            int skippedMissingClass = 0;
+            String stopReason = "end_of_file";
+            boolean partial = false;
+            while (read < maxInstances) {
+                if (System.nanoTime() >= deadline) {
+                    stopReason = "budget_exhausted";
+                    partial = true;
+                    break;
+                }
+                Instance instance = loader.getNextInstance(header);
+                if (instance == null) {
+                    break;
+                }
+                read++;
+                if (instance.classIsMissing()) {
+                    skippedMissingClass++;
+                    continue;
+                }
+                if ("holdout".equals(evaluationMode) && read % testEvery == 0 && test.numInstances() < maxTestInstances) {
+                    test.add(instance);
+                    tested++;
+                    continue;
+                }
+                if ("prequential".equals(evaluationMode) && read % testEvery == 0 && tested < maxTestInstances) {
+                    evaluation.evaluateModelOnce(classifier, instance);
+                    tested++;
+                }
+                updateable.updateClassifier(instance);
+                trained++;
+            }
+            if (read == maxInstances && "end_of_file".equals(stopReason)) {
+                stopReason = "max_instances";
                 partial = true;
-                break;
             }
-            Instance instance = loader.getNextInstance(header);
-            if (instance == null) {
-                break;
+            if ("holdout".equals(evaluationMode)) {
+                for (Instance instance : test) {
+                    evaluation.evaluateModelOnce(classifier, instance);
+                }
             }
-            read++;
-            if (instance.classIsMissing()) {
-                skippedMissingClass++;
-                continue;
+            ObjectNode metrics = null;
+            if (tested > 0) {
+                metrics = ToolSupport.object();
+                metrics.put("mode", evaluationMode);
+                metrics.put("instances", tested);
+                metrics.put("test_then_train", "prequential".equals(evaluationMode));
+                WekaTools.addEvaluationMetrics(metrics, evaluation, header);
             }
-            if ("holdout".equals(evaluationMode) && read % testEvery == 0 && test.numInstances() < maxTestInstances) {
-                test.add(instance);
-                tested++;
-                continue;
-            }
-            if ("prequential".equals(evaluationMode) && read % testEvery == 0 && tested < maxTestInstances) {
-                evaluation.evaluateModelOnce(classifier, instance);
-                tested++;
-            }
-            updateable.updateClassifier(instance);
-            trained++;
+            return new StreamResult(header, read, trained, tested, skippedMissingClass, stopReason, partial, metrics);
         }
-        if (read == maxInstances && "end_of_file".equals(stopReason)) {
-            stopReason = "max_instances";
-            partial = true;
-        }
-        if ("holdout".equals(evaluationMode)) {
-            for (Instance instance : test) {
-                evaluation.evaluateModelOnce(classifier, instance);
-            }
-        }
-        ObjectNode metrics = null;
-        if (tested > 0) {
-            metrics = ToolSupport.object();
-            metrics.put("mode", evaluationMode);
-            metrics.put("instances", tested);
-            metrics.put("test_then_train", "prequential".equals(evaluationMode));
-            WekaTools.addEvaluationMetrics(metrics, evaluation, header);
-        }
-        return new StreamResult(header, read, trained, tested, skippedMissingClass, stopReason, partial, metrics);
     }
 
     private record StreamResult(Instances header, int readInstances, int trainingInstances, int testInstances,

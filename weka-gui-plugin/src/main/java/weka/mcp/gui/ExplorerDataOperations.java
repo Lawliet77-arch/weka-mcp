@@ -7,11 +7,16 @@ import tools.jackson.databind.node.ObjectNode;
 import weka.core.Attribute;
 import weka.core.AttributeStats;
 import weka.core.Instances;
-import weka.core.converters.ConverterUtils.DataSource;
+import weka.core.converters.AbstractFileLoader;
+import weka.core.converters.ArffLoader;
+import weka.core.converters.CSVLoader;
 import weka.filters.Filter;
 import weka.gui.explorer.Explorer;
 
+import java.io.InputStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Locale;
 import java.util.Set;
 
 final class ExplorerDataOperations {
@@ -44,7 +49,7 @@ final class ExplorerDataOperations {
         }
         String imported = workspace.importDataset(supplied);
         Path dataset = workspace.resolveDataset(imported);
-        Instances data = new DataSource(dataset.toString()).getDataSet();
+        Instances data = loadDataset(dataset);
         if (data.numInstances() == 0) {
             throw new IllegalArgumentException("Dataset must contain at least one instance");
         }
@@ -67,6 +72,22 @@ final class ExplorerDataOperations {
             result.put("source", imported);
             return result;
         });
+    }
+
+    static Instances loadDataset(Path dataset) throws Exception {
+        String filename = dataset.getFileName().toString().toLowerCase(Locale.ROOT);
+        AbstractFileLoader loader;
+        if (filename.endsWith(".arff")) {
+            loader = new ArffLoader();
+        } else if (filename.endsWith(".csv")) {
+            loader = new CSVLoader();
+        } else {
+            throw new IllegalArgumentException("Dataset must be an ARFF or CSV file");
+        }
+        try (InputStream input = Files.newInputStream(dataset)) {
+            loader.setSource(input);
+            return loader.getDataSet();
+        }
     }
 
     ObjectNode filter(JsonNode arguments) throws Exception {

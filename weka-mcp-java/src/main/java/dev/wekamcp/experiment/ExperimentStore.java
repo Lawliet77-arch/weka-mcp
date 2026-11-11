@@ -4,7 +4,6 @@ import dev.wekamcp.config.ServerConfig;
 import tools.jackson.databind.json.JsonMapper;
 import weka.classifiers.Classifier;
 import weka.core.Instances;
-import weka.core.converters.ArffLoader;
 import weka.core.converters.ArffSaver;
 
 import java.io.IOException;
@@ -137,15 +136,12 @@ public final class ExperimentStore {
         ExperimentRecord record = get(id);
         Path datasetFile = experimentDirectory(id).resolve("dataset.arff");
         if (Files.isRegularFile(datasetFile)) {
-            ArffLoader loader = new ArffLoader();
-            loader.setFile(datasetFile.toFile());
-            return loader.getDataSet();
+            return dev.wekamcp.engine.DatasetIo.load(datasetFile, "arff");
         }
         if (record.sourcePath == null) {
             throw new IllegalArgumentException("Experiment dataset is missing: " + id);
         }
-        Instances data = new weka.core.converters.ConverterUtils.DataSource(
-                config.resolveDatasetPath(record.sourcePath).toString()).getDataSet();
+        Instances data = dev.wekamcp.engine.DatasetIo.load(config.resolveDatasetPath(record.sourcePath), "auto");
         data.setClassIndex(record.classIndex);
         return data;
     }

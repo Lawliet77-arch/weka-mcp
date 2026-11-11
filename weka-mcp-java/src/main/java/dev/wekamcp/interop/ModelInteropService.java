@@ -22,9 +22,6 @@ import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.OptionHandler;
 import weka.core.SerializedObject;
-import weka.core.converters.AbstractFileLoader;
-import weka.core.converters.ArffLoader;
-import weka.core.converters.CSVLoader;
 import weka.core.converters.Loader;
 import weka.filters.Filter;
 import weka.filters.MultiFilter;
@@ -41,7 +38,6 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HexFormat;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -377,50 +373,45 @@ public final class ModelInteropService {
         if (!Set.of("auto", "arff", "csv").contains(format)) {
             throw new IllegalArgumentException("format must be auto, arff or csv");
         }
-        String filename = path.getFileName().toString().toLowerCase(Locale.ROOT);
-        boolean arff = "arff".equals(format) || "auto".equals(format) && filename.endsWith(".arff");
-        if ("auto".equals(format) && !arff && !filename.endsWith(".csv")) {
-            throw new IllegalArgumentException("auto format requires an .arff or .csv filename");
-        }
-        AbstractFileLoader fileLoader = arff ? new ArffLoader() : new CSVLoader();
-        fileLoader.setFile(path.toFile());
-        Loader loader = fileLoader;
-        Instances header = loader.getStructure();
-        if (header.numAttributes() < 1 || header.numAttributes() > 10_000) {
-            throw new IllegalArgumentException("Invalid update attribute count");
-        }
-        header.setClassIndex(trainingHeader.classIndex());
-        if (!trainingHeader.equalHeaders(header)) {
-            throw new IllegalArgumentException("Update file header is incompatible with the training header");
-        }
-        int read = 0;
-        int updated = 0;
-        int skipped = 0;
-        boolean partial = false;
-        String stopReason = "end_of_file";
-        while (read < maximum) {
-            if (System.nanoTime() >= deadline) {
+        try (var opened = dev.wekamcp.engine.DatasetIo.open(path, format)) {
+            Loader loader = opened.loader();
+            Instances header = loader.getStructure();
+            if (header.numAttributes() < 1 || header.numAttributes() > 10_000) {
+                throw new IllegalArgumentException("Invalid update attribute count");
+            }
+            header.setClassIndex(trainingHeader.classIndex());
+            if (!trainingHeader.equalHeaders(header)) {
+                throw new IllegalArgumentException("Update file header is incompatible with the training header");
+            }
+            int read = 0;
+            int updated = 0;
+            int skipped = 0;
+            boolean partial = false;
+            String stopReason = "end_of_file";
+            while (read < maximum) {
+                if (System.nanoTime() >= deadline) {
+                    partial = true;
+                    stopReason = "budget_exhausted";
+                    break;
+                }
+                Instance instance = loader.getNextInstance(header);
+                if (instance == null) {
+                    break;
+                }
+                read++;
+                if (instance.classIsMissing()) {
+                    skipped++;
+                    continue;
+                }
+                ((UpdateableClassifier) classifier).updateClassifier(instance);
+                updated++;
+            }
+            if (read == maximum && "end_of_file".equals(stopReason)) {
                 partial = true;
-                stopReason = "budget_exhausted";
-                break;
+                stopReason = "max_instances";
             }
-            Instance instance = loader.getNextInstance(header);
-            if (instance == null) {
-                break;
-            }
-            read++;
-            if (instance.classIsMissing()) {
-                skipped++;
-                continue;
-            }
-            ((UpdateableClassifier) classifier).updateClassifier(instance);
-            updated++;
+            return new UpdateResult(read, updated, skipped, partial, stopReason);
         }
-        if (read == maximum && "end_of_file".equals(stopReason)) {
-            partial = true;
-            stopReason = "max_instances";
-        }
-        return new UpdateResult(read, updated, skipped, partial, stopReason);
     }
 
     private List<FilterSpec> preprocessing(Classifier classifier) {

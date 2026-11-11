@@ -85,8 +85,7 @@ class ExperimentStoreTest {
     void readsClassifierPayloadSerializedWithTheOriginalLayout() throws Exception {
         ModelCodec.ModelPayload payload = ModelCodec.read(
                 Path.of("src/test/resources/legacy-classifier-1.4.0.model"), 1_000_000, J48.class.getName(), false);
-        Instances data = new weka.core.converters.ConverterUtils.DataSource(
-                Path.of("src/test/resources/iris.arff").toString()).getDataSet();
+        Instances data = dev.wekamcp.engine.DatasetIo.load(Path.of("src/test/resources/iris.arff"), "arff");
         data.setClassIndex(data.numAttributes() - 1);
         J48 expected = new J48();
         expected.buildClassifier(data);

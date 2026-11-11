@@ -14,7 +14,6 @@ import tools.jackson.databind.JsonNode;
 import weka.classifiers.bayes.NaiveBayesUpdateable;
 import weka.core.Instance;
 import weka.core.Instances;
-import weka.core.converters.ConverterUtils.DataSource;
 
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -124,7 +123,7 @@ class ModelInteropServiceTest {
             assertEquals("UPDATE_SOURCE", manifest.get("datasetRole").asText());
             assertEquals("incremental_update", manifest.get("protocol").asText());
 
-            Instances full = new DataSource(directory.resolve("iris.arff").toString()).getDataSet();
+            Instances full = dev.wekamcp.engine.DatasetIo.load(directory.resolve("iris.arff"), "arff");
             full.setClassIndex(4);
             NaiveBayesUpdateable direct = new NaiveBayesUpdateable();
             direct.buildClassifier(new Instances(full, 0));
@@ -133,7 +132,7 @@ class ModelInteropServiceTest {
                     direct.updateClassifier(full.instance(index));
                 }
             }
-            Instances updates = new DataSource(directory.resolve("update.arff").toString()).getDataSet();
+            Instances updates = dev.wekamcp.engine.DatasetIo.load(directory.resolve("update.arff"), "arff");
             updates.setClassIndex(4);
             for (Instance instance : updates) {
                 direct.updateClassifier(instance);

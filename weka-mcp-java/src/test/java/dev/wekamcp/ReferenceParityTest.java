@@ -175,8 +175,7 @@ class ReferenceParityTest {
         }
 
         private Instances load(String name) throws Exception {
-            return new weka.core.converters.ConverterUtils.DataSource(
-                    root.resolve("data").resolve(name).toString()).getDataSet();
+            return dev.wekamcp.engine.DatasetIo.load(root.resolve("data").resolve(name), "auto");
         }
 
         @Override

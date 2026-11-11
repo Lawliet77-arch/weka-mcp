@@ -45,8 +45,7 @@ class McpPanelWorkflowIT {
         JFrame frame = new JFrame("Weka MCP GUI integration verification");
         try {
             Explorer explorer = new Explorer();
-            var instances = new weka.core.converters.ConverterUtils.DataSource(
-                    Path.of("target/test-workspace/data/iris.arff").toAbsolutePath().toString()).getDataSet();
+            var instances = TestSupport.iris();
             instances.setClassIndex(instances.numAttributes() - 1);
             explorer.getPreprocessPanel().setInstances(instances);
             SwingUtilities.invokeAndWait(() -> { });
