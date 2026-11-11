@@ -1,0 +1,258 @@
+classifiers:
+  - class: weka.classifiers.rules.ZeroR
+    allowed_options: {}
+  - class: weka.classifiers.rules.OneR
+    allowed_options:
+      "-B": {args: 1, type: integer, min: 1, max: 1000000}
+  - class: weka.classifiers.trees.DecisionStump
+    allowed_options: {}
+  - class: weka.classifiers.rules.JRip
+    allowed_options:
+      "-F": {args: 1, type: integer, min: 1, max: 1000}
+      "-N": {args: 1, type: number, min: 0.0, max: 1000000.0}
+      "-O": {args: 1, type: integer, min: 1, max: 1000}
+      "-S": {args: 1, type: integer, min: 0, max: 2147483647}
+  - class: weka.classifiers.rules.PART
+    allowed_options:
+      "-C": {args: 1, type: number, min: 0.0, max: 1.0}
+      "-M": {args: 1, type: integer, min: 1, max: 1000000}
+  - class: weka.classifiers.rules.M5Rules
+    allowed_options: {}
+  - class: weka.classifiers.rules.DecisionTable
+    allowed_options: {}
+  - class: weka.classifiers.bayes.NaiveBayes
+    allowed_options:
+      "-K": {args: 0}
+  - class: weka.classifiers.bayes.NaiveBayesUpdateable
+    allowed_options:
+      "-K": {args: 0}
+  - class: weka.classifiers.bayes.NaiveBayesMultinomial
+    allowed_options: {}
+  - class: weka.classifiers.bayes.NaiveBayesMultinomialUpdateable
+    allowed_options: {}
+  - class: weka.classifiers.bayes.BayesNet
+    allowed_options: {}
+  - class: weka.classifiers.trees.J48
+    allowed_options:
+      "-U": {args: 0}
+      "-O": {args: 0}
+      "-C": {args: 1, type: number, min: 0.0, max: 1.0}
+      "-M": {args: 1, type: integer, min: 1, max: 1000000}
+  - class: weka.classifiers.trees.RandomTree
+    allowed_options:
+      "-K": {args: 1, type: integer, min: 1, max: 1000000}
+      "-M": {args: 1, type: integer, min: 1, max: 1000000}
+      "-S": {args: 1, type: integer, min: 0, max: 2147483647}
+      "-depth": {args: 1, type: integer, min: 0, max: 10000}
+  - class: weka.classifiers.trees.REPTree
+    allowed_options:
+      "-L": {args: 1, type: integer, min: 1, max: 1000000}
+      "-M": {args: 1, type: integer, min: 1, max: 1000000}
+      "-S": {args: 1, type: integer, min: 0, max: 2147483647}
+      "-depth": {args: 1, type: integer, min: 0, max: 10000}
+  - class: weka.classifiers.trees.M5P
+    allowed_options:
+      "-M": {args: 1, type: integer, min: 1, max: 1000000}
+  - class: weka.classifiers.trees.HoeffdingTree
+    allowed_options:
+      "-G": {args: 1, type: integer, min: 1, max: 1000000}
+      "-M": {args: 1, type: number, min: 0.0, max: 1.0}
+      "-H": {args: 1, type: number, min: 0.0, max: 1.0}
+  - class: weka.classifiers.trees.RandomForest
+    allowed_options:
+      "-I": {args: 1, type: integer, min: 1, max: 10000}
+      "-S": {args: 1, type: integer, min: 0, max: 2147483647}
+      "-depth": {args: 1, type: integer, min: 0, max: 10000}
+      "-num-slots": {args: 1, type: integer, min: 0, max: 10000}
+  - class: weka.classifiers.functions.Logistic
+    allowed_options:
+      "-R": {args: 1, type: number, min: 0.0, max: 1000000.0}
+      "-M": {args: 1, type: integer, min: -1, max: 10000}
+  - class: weka.classifiers.functions.SimpleLogistic
+    allowed_options:
+      "-I": {args: 1, type: integer, min: 0, max: 10000}
+      "-S": {args: 1, type: integer, min: 0, max: 2147483647}
+  - class: weka.classifiers.functions.MultilayerPerceptron
+    allowed_options:
+      "-L": {args: 1, type: number, min: 0.0, max: 1.0}
+      "-M": {args: 1, type: number, min: 0.0, max: 1.0}
+      "-N": {args: 1, type: integer, min: 1, max: 100000}
+      "-S": {args: 1, type: integer, min: 0, max: 2147483647}
+      "-H": {args: 1, type: string}
+  - class: weka.classifiers.functions.VotedPerceptron
+    allowed_options:
+      "-I": {args: 1, type: integer, min: 1, max: 100000}
+      "-E": {args: 1, type: number, min: 0.0, max: 1000000.0}
+      "-S": {args: 1, type: integer, min: 0, max: 2147483647}
+  - class: weka.classifiers.functions.SGD
+    allowed_options:
+      "-F": {args: 1, type: integer, min: 0, max: 4}
+      "-L": {args: 1, type: number, min: 0.0, max: 1000000.0}
+      "-R": {args: 1, type: number, min: 0.0, max: 1000000.0}
+      "-N": {args: 0}
+      "-M": {args: 0}
+      "-S": {args: 1, type: integer, min: 0, max: 2147483647}
+  - class: weka.classifiers.functions.SMO
+    allowed_options:
+      "-C": {args: 1, type: number, min: 0.000001, max: 1000000.0}
+      "-N": {args: 1, type: integer, min: 0, max: 2}
+  - class: weka.classifiers.functions.SMOreg
+    allowed_options:
+      "-C": {args: 1, type: number, min: 0.000001, max: 1000000.0}
+  - class: weka.classifiers.functions.LinearRegression
+    allowed_options:
+      "-R": {args: 1, type: number, min: 0.0, max: 1000000.0}
+      "-minimal": {args: 0}
+      "-no-stats": {args: 0}
+  - class: weka.classifiers.lazy.IBk
+    allowed_options:
+      "-K": {args: 1, type: integer, min: 1, max: 1000}
+      "-E": {args: 0}
+      "-I": {args: 0}
+      "-F": {args: 0}
+  - class: weka.classifiers.lazy.KStar
+    allowed_options:
+      "-B": {args: 1, type: integer, min: 0, max: 100}
+  - class: weka.classifiers.lazy.LWL
+    allowed_options:
+      "-K": {args: 1, type: integer, min: 1, max: 1000000}
+  - class: weka.classifiers.meta.AdaBoostM1
+    allowed_options:
+      "-I": {args: 1, type: integer, min: 1, max: 10000}
+      "-S": {args: 1, type: integer, min: 0, max: 2147483647}
+  - class: weka.classifiers.meta.Bagging
+    allowed_options:
+      "-I": {args: 1, type: integer, min: 1, max: 10000}
+      "-S": {args: 1, type: integer, min: 0, max: 2147483647}
+  - class: weka.classifiers.meta.LogitBoost
+    allowed_options:
+      "-I": {args: 1, type: integer, min: 1, max: 10000}
+      "-S": {args: 1, type: integer, min: 0, max: 2147483647}
+  - class: weka.classifiers.meta.RandomCommittee
+    allowed_options:
+      "-I": {args: 1, type: integer, min: 1, max: 10000}
+      "-S": {args: 1, type: integer, min: 0, max: 2147483647}
+  - class: weka.classifiers.meta.RandomSubSpace
+    allowed_options:
+      "-P": {args: 1, type: number, min: 0.0, max: 1.0}
+      "-I": {args: 1, type: integer, min: 1, max: 10000}
+      "-S": {args: 1, type: integer, min: 0, max: 2147483647}
+  - class: weka.classifiers.meta.AdditiveRegression
+    allowed_options:
+      "-I": {args: 1, type: integer, min: 1, max: 10000}
+      "-S": {args: 1, type: integer, min: 0, max: 2147483647}
+  - class: weka.classifiers.meta.RegressionByDiscretization
+    allowed_options:
+      "-B": {args: 1, type: integer, min: 1, max: 1000}
+filters:
+  - class: weka.filters.unsupervised.attribute.Standardize
+    allowed_options: {}
+  - class: weka.filters.unsupervised.attribute.Normalize
+    allowed_options: {}
+  - class: weka.filters.unsupervised.attribute.ReplaceMissingValues
+    allowed_options: {}
+  - class: weka.filters.unsupervised.attribute.Remove
+    allowed_options:
+      "-R": {args: 1, type: string}
+  - class: weka.filters.unsupervised.attribute.RemoveUseless
+    allowed_options: {}
+  - class: weka.filters.unsupervised.attribute.NominalToBinary
+    allowed_options: {}
+  - class: weka.filters.unsupervised.attribute.NumericToNominal
+    allowed_options:
+      "-R": {args: 1, type: string}
+  - class: weka.filters.unsupervised.attribute.NominalToString
+    allowed_options:
+      "-C": {args: 1, type: string}
+  - class: weka.filters.unsupervised.attribute.Discretize
+    allowed_options:
+      "-R": {args: 1, type: string}
+      "-B": {args: 1, type: integer, min: 1, max: 1000}
+  - class: weka.filters.unsupervised.attribute.InterquartileRange
+    allowed_options:
+      "-R": {args: 1, type: string}
+      "-O": {args: 0}
+      "-E": {args: 0}
+  - class: weka.filters.unsupervised.attribute.RemoveType
+    allowed_options:
+      "-T": {args: 1, type: string}
+  - class: weka.filters.unsupervised.attribute.Add
+    allowed_options:
+      "-T": {args: 1, type: string}
+  - class: weka.filters.unsupervised.attribute.StringToWordVector
+    allowed_options:
+      "-R": {args: 1, type: integer, min: 1, max: 10000}
+      "-W": {args: 1, type: integer, min: 1, max: 1000000}
+      "-L": {args: 0}
+  - class: weka.filters.unsupervised.attribute.PrincipalComponents
+    allowed_options: {}
+  - class: weka.filters.supervised.attribute.Discretize
+    allowed_options:
+      "-R": {args: 1, type: string}
+      "-V": {args: 0}
+      "-D": {args: 0}
+      "-Y": {args: 0}
+      "-E": {args: 0}
+      "-K": {args: 0}
+      "-precision": {args: 1, type: integer, min: 0, max: 1000}
+      "-spread-attribute-weight": {args: 0}
+  - class: weka.filters.unsupervised.instance.Resample
+    allowed_options:
+      "-N": {args: 1, type: integer, min: 1, max: 10000}
+      "-S": {args: 1, type: integer, min: 0, max: 2147483647}
+      "-Z": {args: 1, type: number, min: 0.0001, max: 100.0}
+      "-no-replacement": {args: 0}
+  - class: weka.filters.unsupervised.instance.Randomize
+    allowed_options:
+      "-S": {args: 1, type: integer, min: 0, max: 2147483647}
+  - class: weka.filters.unsupervised.instance.RemoveFolds
+    allowed_options:
+      "-N": {args: 1, type: integer, min: 2, max: 10000}
+      "-F": {args: 1, type: integer, min: 1, max: 10000}
+      "-V": {args: 0}
+clusterers:
+  - class: weka.clusterers.SimpleKMeans
+    allowed_options:
+      "-N": {args: 1, type: integer, min: 1, max: 1000}
+      "-I": {args: 1, type: integer, min: 1, max: 10000}
+      "-S": {args: 1, type: integer, min: 0, max: 2147483647}
+  - class: weka.clusterers.EM
+    allowed_options:
+      "-N": {args: 1, type: integer, min: -1, max: 1000}
+      "-I": {args: 1, type: integer, min: 1, max: 10000}
+      "-S": {args: 1, type: integer, min: 0, max: 2147483647}
+  - class: weka.clusterers.HierarchicalClusterer
+    allowed_options:
+      "-N": {args: 1, type: integer, min: 1, max: 1000}
+  - class: weka.clusterers.FarthestFirst
+    allowed_options:
+      "-N": {args: 1, type: integer, min: 1, max: 1000}
+      "-S": {args: 1, type: integer, min: 0, max: 2147483647}
+  - class: weka.clusterers.Canopy
+    allowed_options:
+      "-T1": {args: 1, type: number, min: -1000000.0, max: 1000000.0}
+      "-T2": {args: 1, type: number, min: -1000000.0, max: 1000000.0}
+      "-S": {args: 1, type: integer, min: 0, max: 2147483647}
+  - class: weka.clusterers.Cobweb
+    allowed_options:
+      "-A": {args: 1, type: number, min: 0.0, max: 1000000.0}
+      "-C": {args: 1, type: number, min: 0.0, max: 1000000.0}
+associators:
+  - class: weka.associations.Apriori
+    allowed_options:
+      "-N": {args: 1, type: integer, min: 1, max: 1000}
+      "-M": {args: 1, type: number, min: 0.000001, max: 1.0}
+      "-U": {args: 1, type: number, min: 0.000001, max: 1.0}
+      "-C": {args: 1, type: number, min: 0.0, max: 1.0}
+      "-D": {args: 1, type: number, min: 0.0, max: 1.0}
+  - class: weka.associations.FPGrowth
+    allowed_options:
+      "-P": {args: 1, type: integer, min: 1, max: 1000000}
+      "-I": {args: 1, type: integer, min: -1, max: 1000000}
+      "-N": {args: 1, type: integer, min: 1, max: 1000}
+      "-T": {args: 1, type: integer, min: 0, max: 5}
+      "-C": {args: 1, type: number, min: 0.0, max: 1000000.0}
+      "-D": {args: 1, type: number, min: 0.0, max: 1.0}
+      "-U": {args: 1, type: number, min: 0.000001, max: 1.0}
+      "-M": {args: 1, type: number, min: 0.000001, max: 1.0}
+      "-S": {args: 0}

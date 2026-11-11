@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "weka-explorer": {
+      "command": "/Users/<user>/wekafiles/packages/wekaMcp/bin/bridge-stdio.sh",
+      "args": []
+    }
+  }
+}

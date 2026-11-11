@@ -1,0 +1,9 @@
+**/target/
+.tools/
+.DS_Store
+*.log
+*.iml
+.idea/
+.vscode/
+weka-mcp-java/data/
+weka-mcp-java/dist/

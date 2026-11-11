@@ -1,0 +1,15 @@
+PackageName=wekaMcp
+Version=0.8.0
+Date=2026-11-11
+Title=Weka MCP workbench
+Category=Explorer
+Author=liutianqi
+Maintainer=liutianqi
+License=GPL-3.0-or-later
+Description=Native Weka Explorer workbench backed by an isolated Weka MCP STDIO process. Provides dataset profiling, training, evaluation, prediction, clustering and persistent model workflows.
+Changes=Adds structured classifier/clustering metrics and operation/dataset provenance with stale and cancelled states.
+PackageURL=file:weka-mcp-gui-0.8.0.zip
+URL=file:README.md
+Depends=weka (>=3.8.7)
+DoNotLoadIfFileNotPresent=tools/weka-mcp-java-1.6.0.jar
+DoNotLoadIfFileNotPresentMessage=The Weka MCP executable is missing from the tools directory.

@@ -1,0 +1,55 @@
+classifiers:
+  - class: weka.classifiers.trees.RandomForest
+    candidates: ["", "-I 50", "-I 200", "-I 300 -depth 10"]
+  - class: weka.classifiers.bayes.NaiveBayes
+    candidates: ["", "-K"]
+  - class: weka.classifiers.trees.J48
+    candidates: ["", "-C 0.1", "-C 0.5 -M 1", "-U"]
+  - class: weka.classifiers.functions.Logistic
+    candidates: ["", "-R 0.01", "-R 0.1", "-R 1.0 -M 100"]
+  - class: weka.classifiers.lazy.IBk
+    candidates: ["", "-K 1", "-K 3", "-K 5 -I"]
+  - class: weka.classifiers.functions.SMO
+    candidates: ["", "-C 0.1", "-C 1.0", "-C 10.0"]
+  - class: weka.classifiers.functions.LinearRegression
+    candidates: ["", "-R 0.01", "-R 0.1", "-R 1.0 -minimal"]
+  - class: weka.classifiers.functions.SMOreg
+    candidates: ["", "-C 0.1", "-C 1.0", "-C 10.0"]
+  - class: weka.classifiers.trees.RandomTree
+    candidates: ["", "-K 2 -M 1", "-depth 5"]
+  - class: weka.classifiers.trees.REPTree
+    candidates: ["", "-L 2 -M 2", "-depth 6"]
+  - class: weka.classifiers.trees.DecisionStump
+    candidates: [""]
+  - class: weka.classifiers.functions.SimpleLogistic
+    candidates: ["", "-I 20"]
+  - class: weka.classifiers.rules.PART
+    candidates: ["", "-C 0.1 -M 1"]
+  - class: weka.classifiers.rules.JRip
+    candidates: ["", "-O 2 -S 42"]
+  - class: weka.classifiers.bayes.BayesNet
+    candidates: [""]
+  - class: weka.classifiers.bayes.NaiveBayesMultinomial
+    candidates: [""]
+  - class: weka.classifiers.meta.Bagging
+    candidates: ["", "-I 20 -S 42"]
+  - class: weka.classifiers.meta.LogitBoost
+    candidates: ["", "-I 20 -S 42"]
+  - class: weka.classifiers.meta.RandomCommittee
+    candidates: ["", "-I 20 -S 42"]
+  - class: weka.classifiers.meta.RandomSubSpace
+    candidates: ["", "-P 0.5 -I 20 -S 42"]
+  - class: weka.classifiers.functions.MultilayerPerceptron
+    candidates: ["", "-N 100 -S 42"]
+  - class: weka.classifiers.lazy.KStar
+    candidates: ["", "-B 20"]
+  - class: weka.classifiers.lazy.LWL
+    candidates: ["", "-K 20"]
+  - class: weka.classifiers.trees.M5P
+    candidates: ["", "-M 4"]
+  - class: weka.classifiers.rules.M5Rules
+    candidates: [""]
+  - class: weka.classifiers.meta.AdditiveRegression
+    candidates: ["", "-I 20 -S 42"]
+  - class: weka.classifiers.meta.RegressionByDiscretization
+    candidates: ["", "-B 5"]
