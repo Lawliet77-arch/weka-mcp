@@ -7,6 +7,12 @@
 - `weka-mcp-java` **1.6.0**：纯 Java STDIO 服务，提供 **43 个后台工具**，覆盖数据准备、画像、过滤、分类/回归、聚类、关联分析、属性选择、重复评估、AutoML、增量训练和模型互操作。
 - `weka-gui-plugin` **0.8.0**：Weka Explorer 工作台与原生应用自动化桥接，额外提供 **21 个原生 Explorer 工具**。安装后，Agent 可以读取当前数据、执行预处理、启动原生训练/聚类/关联/属性选择任务并获取结果，还能打开和导出原生散点图。合计 **64 个工具**，而不是把同一个工具重复封装两次。
 
+## 图文教程与实际截图
+
+[查看安装、训练、Agent 桥接及原生散点图的完整图文教程](how-to-use/README.md)。教程包含六张真实运行截图，以及可复用的[宣传文案与配图建议](how-to-use/PROMOTION.md)。
+
+![Agent 驱动真实 Weka Explorer 进行分类评估](how-to-use/images/04-native-classifier.png)
+
 ## 环境与构建
 
 需要 Java 17+ 和 Maven 3.9+。在仓库根目录依次构建：
